@@ -1,4 +1,4 @@
-use rand::Rng;
+use rng::AntiNomRng;
 
 pub mod branch;
 pub mod bytes;
@@ -6,6 +6,7 @@ pub mod character;
 pub mod combinator;
 mod macros;
 pub mod multi;
+pub mod rng;
 pub mod sequence;
 
 pub trait Buffer {
@@ -45,7 +46,7 @@ impl Buffer for String {
 
 pub trait Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
 {
     fn gen(&mut self, rng: &mut R, buffer: &mut B);
@@ -53,7 +54,7 @@ where
 
 impl<R, B, F> Generator<R, B> for F
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: FnMut(&mut R, &mut B),
 {

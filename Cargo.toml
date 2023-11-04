@@ -4,8 +4,15 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.56.1"
 
-[dependencies]
-rand = "0.8"
+[features]
+default = ["full_msrv"]
+full = ["rng_rand", "rng_arbitrary"]
+full_msrv = ["rng_rand"]
+rng_rand = ["rand", "rand_chacha"]
+rng_arbitrary = ["arbitrary"]
 
-[dev-dependencies]
-rand_chacha = "0.3"
+[dependencies]
+rand = { version = "0.8", optional = true }
+rand_chacha = { version = "0.3", optional = true }
+arbitrary = { version = "1", optional = true }
+

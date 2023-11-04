@@ -1,10 +1,8 @@
-use rand::Rng;
-
-use crate::{Buffer, Generator};
+use crate::{AntiNomRng, Buffer, Generator};
 
 pub fn many0<R, B, F>(mut f: F, max_items: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
 {
@@ -18,7 +16,7 @@ where
 
 pub fn many_till<R, B, F, G>(mut f: F, mut g: G, max_items: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,
@@ -34,7 +32,7 @@ where
 
 pub fn separated_list0<R, B, F, G>(mut sep: G, mut f: F, max_items: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,
@@ -53,7 +51,7 @@ where
 
 pub fn separated_list1<R, B, F, G>(mut sep: G, mut f: F, max_items: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,

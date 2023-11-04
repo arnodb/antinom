@@ -1,10 +1,8 @@
-use rand::Rng;
-
-use crate::{Buffer, Generator};
+use crate::{AntiNomRng, Buffer, Generator};
 
 pub fn char<R, B>(c: B::Char) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     B::Char: Clone,
 {
@@ -21,7 +19,7 @@ const SPACE: &str = " \t\r\n";
 
 pub fn alpha1<R, B>(max_length: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     B::Char: From<u8>,
 {
@@ -35,7 +33,7 @@ where
 
 pub fn alphanumeric1<R, B>(max_length: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     B::Char: From<u8>,
 {
@@ -49,7 +47,7 @@ where
 
 pub fn multispace0<R, B>(max_length: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     B::Char: From<u8>,
 {
@@ -63,7 +61,7 @@ where
 
 pub fn multispace1<R, B>(max_length: u8) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     B::Char: From<u8>,
 {

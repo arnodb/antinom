@@ -1,10 +1,8 @@
-use rand::Rng;
-
-use crate::{macros::succ, Buffer, Generator};
+use crate::{macros::succ, AntiNomRng, Buffer, Generator};
 
 pub trait Alt<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
 {
     fn choice(&mut self, rng: &mut R, buffer: &mut B);
@@ -26,7 +24,7 @@ macro_rules! alt_trait(
 
 macro_rules! alt_trait_impl(
     ($len:expr; $($id:ident)+) => (
-        impl<R, B, $($id),+>  Alt<R, B> for ( $($id),+ ) where R: Rng, B: Buffer, $($id: Generator<R, B>),* {
+        impl<R, B, $($id),+>  Alt<R, B> for ( $($id),+ ) where R: AntiNomRng, B: Buffer, $($id: Generator<R, B>),* {
             fn choice(&mut self, rng: &mut R, buffer: &mut B) {
                 let i = rng.gen_range(0..$len);
                 alt_match_arm!(0, self, rng, buffer, i; $($id)*);
@@ -51,7 +49,7 @@ alt_trait!(A C D E F G H I J K L M N O P Q S T U V W);
 
 pub fn alt<R, B, List>(mut l: List) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     List: Alt<R, B>,
 {

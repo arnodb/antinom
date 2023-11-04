@@ -1,10 +1,8 @@
-use rand::Rng;
-
-use crate::{macros::succ, Buffer, Generator};
+use crate::{macros::succ, AntiNomRng, Buffer, Generator};
 
 pub fn pair<R, B, F, G>(mut f: F, mut g: G) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,
@@ -17,7 +15,7 @@ where
 
 pub fn preceded<R, B, F, G>(mut first: F, mut second: G) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,
@@ -30,7 +28,7 @@ where
 
 pub fn terminated<R, B, F, G>(mut first: F, mut second: G) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,
@@ -43,7 +41,7 @@ where
 
 pub fn delimited<R, B, F, G, H>(mut first: F, mut second: G, mut third: H) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     F: Generator<R, B>,
     G: Generator<R, B>,
@@ -76,7 +74,7 @@ macro_rules! tuple_trait(
 
 macro_rules! tuple_trait_impl(
     ($len:expr; $($id:ident)+) => (
-        impl<R, B, $($id),+>  Tuple<R, B> for ( $($id),+ ) where R: Rng, B: Buffer, $($id: Generator<R, B>),* {
+        impl<R, B, $($id),+>  Tuple<R, B> for ( $($id),+ ) where R: AntiNomRng, B: Buffer, $($id: Generator<R, B>),* {
             fn gen(&mut self, rng: &mut R, buffer: &mut B) {
                 tuple_item!(0, self, rng, buffer; $($id)*);
             }
@@ -96,7 +94,7 @@ tuple_trait!(A C D E F G H I J K L M N O P Q S T U V W);
 
 pub fn tuple<R, B, List>(mut l: List) -> impl Generator<R, B>
 where
-    R: Rng,
+    R: AntiNomRng,
     B: Buffer,
     List: Tuple<R, B>,
 {
