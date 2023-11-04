@@ -1,0 +1,11 @@
+[package]
+name = "antinom"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.56.1"
+
+[dependencies]
+rand = "0.8"
+
+[dev-dependencies]
+rand_chacha = "0.3"
