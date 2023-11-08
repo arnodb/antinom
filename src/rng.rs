@@ -10,6 +10,22 @@ pub trait AntiNomRng {
     where
         T: AntiNomGenRangeSupport,
         R: AntiNomGenRangeRangeSupport<T>;
+
+    fn anarchy_level(&self) -> AnarchyLevel;
+
+    fn anarchy(&mut self) -> bool {
+        match self.anarchy_level() {
+            AnarchyLevel::LawAndOrder => false,
+            AnarchyLevel::ALittleAnarchy => {
+                let a = self.gen_range(0..=u8::MAX);
+                a <= 2
+            }
+            AnarchyLevel::CivilWar => {
+                let a = self.gen_range(0..=u8::MAX);
+                a <= u8::MAX / 2
+            }
+        }
+    }
 }
 
 #[cfg(all(feature = "rng_rand", not(feature = "rng_arbitrary")))]
@@ -64,6 +80,13 @@ impl AntiNomGenRangeRangeSupport<u8> for RangeInclusive<u8> {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum AnarchyLevel {
+    LawAndOrder,
+    ALittleAnarchy,
+    CivilWar,
+}
+
 #[cfg(feature = "rng_rand")]
 pub use rng_rand::AntiNomRandRng;
 
@@ -71,13 +94,14 @@ pub use rng_rand::AntiNomRandRng;
 pub mod rng_rand {
     use rand::{Rng, SeedableRng};
 
-    use super::{AntiNomGenRangeRangeSupport, AntiNomGenRangeSupport, AntiNomRng};
+    use super::{AnarchyLevel, AntiNomGenRangeRangeSupport, AntiNomGenRangeSupport, AntiNomRng};
 
     pub struct AntiNomRandRng<Rand>
     where
         Rand: Rng,
     {
         pub rng: Rand,
+        pub anarchy_level: AnarchyLevel,
     }
 
     impl<Rand> AntiNomRng for AntiNomRandRng<Rand>
@@ -95,11 +119,16 @@ pub mod rng_rand {
         {
             self.rng.gen_range(range)
         }
+
+        fn anarchy_level(&self) -> AnarchyLevel {
+            self.anarchy_level
+        }
     }
 
     pub fn new_default_rng() -> AntiNomRandRng<rand_chacha::ChaCha8Rng> {
         AntiNomRandRng {
             rng: rand_chacha::ChaCha8Rng::from_entropy(),
+            anarchy_level: AnarchyLevel::LawAndOrder,
         }
     }
 }
@@ -111,10 +140,11 @@ pub use rng_arbitrary::AntiNomArbitraryRng;
 pub mod rng_arbitrary {
     use arbitrary::Unstructured;
 
-    use super::{AntiNomGenRangeRangeSupport, AntiNomGenRangeSupport, AntiNomRng};
+    use super::{AnarchyLevel, AntiNomGenRangeRangeSupport, AntiNomGenRangeSupport, AntiNomRng};
 
     pub struct AntiNomArbitraryRng<'a> {
-        u: Unstructured<'a>,
+        pub u: Unstructured<'a>,
+        pub anarchy_level: AnarchyLevel,
     }
 
     impl<'a> AntiNomRng for AntiNomArbitraryRng<'a> {
@@ -128,6 +158,10 @@ pub mod rng_arbitrary {
             R: AntiNomGenRangeRangeSupport<T>,
         {
             self.u.int_in_range(range.into_range_inclusive()).unwrap()
+        }
+
+        fn anarchy_level(&self) -> AnarchyLevel {
+            self.anarchy_level
         }
     }
 }
