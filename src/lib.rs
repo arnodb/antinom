@@ -49,7 +49,13 @@ where
     R: AntiNomRng,
     B: Buffer,
 {
-    fn gen(&mut self, rng: &mut R, buffer: &mut B);
+    fn gen_one(&mut self, rng: &mut R, buffer: &mut B);
+
+    fn gen(&mut self, rng: &mut R, buffer: &mut B) {
+        if !rng.anarchy() {
+            self.gen_one(rng, buffer);
+        }
+    }
 }
 
 impl<R, B, F> Generator<R, B> for F
@@ -58,7 +64,7 @@ where
     B: Buffer,
     F: FnMut(&mut R, &mut B),
 {
-    fn gen(&mut self, rng: &mut R, buffer: &mut B) {
+    fn gen_one(&mut self, rng: &mut R, buffer: &mut B) {
         self(rng, buffer);
     }
 }

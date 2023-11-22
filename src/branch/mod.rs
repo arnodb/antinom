@@ -26,10 +26,6 @@ macro_rules! alt_trait_impl(
     ($len:expr; $($id:ident)+) => (
         impl<R, B, $($id),+>  Alt<R, B> for ( $($id),+ ) where R: AntiNomRng, B: Buffer, $($id: Generator<R, B>),* {
             fn choice(&mut self, rng: &mut R, buffer: &mut B) {
-                let anarchy = rng.anarchy();
-                if anarchy {
-                    return;
-                }
                 let i = rng.gen_range(0..$len);
                 alt_match_arm!(0, self, rng, buffer, i; $($id)*);
             }
